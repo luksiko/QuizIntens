@@ -130,9 +130,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let numberQuestion = 0;
     const renderAnswers = (index) => {
-
+      
+// карточка вопроса. Проходим циклом по массиву и выводим в верстку
       questions[index].answers.forEach((answer) => {
-
         const answerItem = document.createElement('div');
         answerItem.classList.add('answers-item', 'd-flex', 'flex-column');
         answerItem.innerHTML = `
