@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     closeModal = document.getElementById('closeModal'),
     burgerBtn = document.getElementById('burger'),
     nextButton = document.getElementById('next'),
-    prevButton = document.getElementById('prev');
+    prevButton = document.getElementById('prev'),
+    modalDialog = document.querySelector('.modal-dialog');
 
   const questions = [{
       question: "Какого цвета бургер?",
@@ -80,6 +81,35 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   ];
 
+  // АНИМАЦИЯ МОДАЛКИ
+  let count = -100;
+  modalDialog.style.top = count + "%";
+
+  const animateModal = () => {
+    modalDialog.style.top = count + "%";
+    count += 3;
+
+    if (count < 0) {
+      requestAnimationFrame(animateModal);
+    } else {
+      count = -100;
+    }
+  };
+
+  //  ОБРАБОТЧИКИ
+  btnOpenModal.addEventListener('click', () => {
+
+    requestAnimationFrame(animateModal); // Вызов АНИМАЦИИ МОДАЛКИ
+
+    modalBlock.classList.add('d-block');
+    playTest();
+  });
+  // Close Button
+  closeModal.addEventListener('click', () => {
+    modalBlock.classList.remove('d-block');
+    burgerBtn.classList.remove('active');
+  });
+
   burgerBtn.style.display = 'none';
   // адаптивность через значение clientWidth 
   let clientWidth = document.documentElement.clientWidth;
@@ -106,15 +136,6 @@ document.addEventListener('DOMContentLoaded', function () {
     playTest();
   });
 
-  btnOpenModal.addEventListener('click', () => {
-    modalBlock.classList.add('d-block');
-    playTest();
-  });
-  // Close Button
-  closeModal.addEventListener('click', () => {
-    modalBlock.classList.remove('d-block');
-    burgerBtn.classList.remove('active');
-  });
   // дилигирование Клик на пустом месте закрывает форму
   document.addEventListener('click', (event) => {
     if (!event.target.closest('.modal-dialog') &&
@@ -130,11 +151,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let numberQuestion = 0;
     const renderAnswers = (index) => {
-      
-// карточка вопроса. Проходим циклом по массиву и выводим в верстку
+
+      // карточка вопроса. Проходим циклом по массиву и выводим в верстку
       questions[index].answers.forEach((answer) => {
         const answerItem = document.createElement('div');
-        answerItem.classList.add('answers-item', 'd-flex', 'flex-column');
+        answerItem.classList.add('answers-item', 'd-flex', 'justify-content-center');
         answerItem.innerHTML = `
           <input type="${questions[index].type}" id="${answer.title}" name="answer" class="d-none">
           <label for="${answer.title}" class="d-flex flex-column justify-content-between">
@@ -145,14 +166,14 @@ document.addEventListener('DOMContentLoaded', function () {
         formAnswers.appendChild(answerItem);
       });
     };
-// собираем карточку вопроса
+    // собираем карточку вопроса
     const renderQuestions = (indexQuestion) => {
       formAnswers.innerHTML = '';
       questionTitle.textContent = questions.question;
       // проверяем на количество и делаем кнопки next и prev неактивными
       if (numberQuestion < 1) {
         prevButton.disabled = "disabled";
-      } else if (numberQuestion > (questions.length - 2)) {
+      } else if (numberQuestion >= (questions.length - 1)) {
         nextButton.disabled = "disabled";
       } else {
         prevButton.disabled = "";
@@ -172,5 +193,13 @@ document.addEventListener('DOMContentLoaded', function () {
       renderQuestions(numberQuestion);
     };
 
+    document
+      .getElementById('formAnswers')
+      .addEventListener('click', (event) => {
+        console.log(event.target);
+      });
   };
+
+
+
 });
