@@ -74,8 +74,11 @@ document.addEventListener('DOMContentLoaded', function () {
 		burgerBtn.classList.remove('active');
 	});
 
+
+	//
+	// * адаптивность через значение clientWidth 
 	burgerBtn.style.display = 'none';
-	// адаптивность через значение clientWidth 
+
 	let clientWidth = document.documentElement.clientWidth;
 	// перед загрузкой страницы проверяем значение экрана для бургера
 	if (clientWidth < 753) {
@@ -139,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		// собираем карточку вопроса
 		const renderQuestions = (indexQuestion) => {
 			formAnswers.innerHTML = '';
-			// проверяем на количество и делаем кнопки next и prev неактивными
+			// проверяем на количество и делаем кнопки next и prev неактивными 
 			switch (true) {
 				case (numberQuestion === 0):
 					renderAnswers(indexQuestion);
@@ -152,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					nextButton.disabled = "";
 					sendButton.classList.add('d-none');
 					break;
-				case (numberQuestion === questions.length):
+				case (numberQuestion === questions.length): //cстранийа после последнего вопроса
 					prevButton.classList.add('d-none');
 					nextButton.classList.add('d-none');
 					sendButton.classList.remove('d-none');
@@ -171,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					});
 
 					break;
-				case (numberQuestion === questions.length + 1):
+				case (numberQuestion === questions.length + 1): // страница благодарности
 					formAnswers.textContent = 'Спасибо за пройденный тест!';
 					prevButton.classList.add('d-none');
 					nextButton.classList.add('d-none');
@@ -200,6 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		const checkAnswer = () => {
 
 			const inputs = [...formAnswers.elements].filter((input) => input.checked || input.id === 'numberPhone');
+
 			inputs.forEach((input, index) => {
 				if (numberQuestion >= 0 && numberQuestion <= questions.length - 1) {
 					obj[index + "_" + questions[numberQuestion].question] = input.value;
@@ -225,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			checkAnswer();
 			numberQuestion++;
 			renderQuestions(numberQuestion);
-
+			//по клику на кнопку обращаемся к firebase серверу для получения json данных
 			firebase
 				.database()
 				.ref()
