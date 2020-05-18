@@ -14,15 +14,31 @@ document.addEventListener('DOMContentLoaded', function () {
 		modalDialog = document.querySelector('.modal-dialog'),
 		modalTitle = document.querySelector('.modal-title');
 
+
+	// Your web app's Firebase configuration
+	// инициализация на Firebase
+	const firebaseConfig = {
+		apiKey: "AIzaSyBZZ2EKW-GBfNF8sj9_pBXpvGyqyMPxA9M",
+		authDomain: "quizintens.firebaseapp.com",
+		databaseURL: "https://quizintens.firebaseio.com",
+		projectId: "quizintens",
+		storageBucket: "quizintens.appspot.com",
+		messagingSenderId: "649035890065",
+		appId: "1:649035890065:web:8694d8db9e950d0ddbee30",
+		measurementId: "G-NSND7T89ET"
+	};
+	// Initialize Firebase
+	firebase.initializeApp(firebaseConfig);
+
+
 	const getData = () => {
 		formAnswers.innerHTML = loader;
-		setTimeout(() => {
-			playTest();
-
-		}, 2000)
+		// вызов Файла json с сайта Firebase
+		firebase.database().ref().child('questions').once('value')
+			.then(snap => playTest(snap.val()));
 	};
 
-// скин лоадера с стороннего сайта
+	// скинер лоадера с стороннего сайта
 	let loader = `
 	<style type="text/css">#hellopreloader>p{display:none;}#hellopreloader_preload{display: block;position: fixed;z-index: 99999;top: 0;left: 0;width: 100%;height: 100%;min-width: 1000px;background: #E4F1FE url(http://hello-site.ru//main/images/preloads/puff.svg) center center no-repeat;background-size:100px;}</style>
 	<div id="hellopreloader_preload"></div><p><a href="http://hello-site.ru">Hello-Site.ru. Бесплатный конструктор сайтов.</a></p>
@@ -45,9 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	//  ОБРАБОТЧИКИ событий открытий\закрытий модального окна
 	btnOpenModal.addEventListener('click', () => {
-
 		requestAnimationFrame(animateModal); // Вызов АНИМАЦИИ МОДАЛКИ
 
+		prevButton.classList.remove('d-none');
+		nextButton.classList.remove('d-none');
 		modalBlock.classList.add('d-block');
 		getData();
 	});
@@ -94,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	// Block "Chose type of burger" in Modal (функция запуска тестирования)
-	const playTest = () => {
+	const playTest = (questions) => {
 
 		const finalAnswers = [];
 		const obj = {};
@@ -192,7 +209,6 @@ document.addEventListener('DOMContentLoaded', function () {
 				}
 
 			});
-			console.log(obj);
 		};
 
 		// обработчики событий кнопок next и prev
@@ -209,7 +225,12 @@ document.addEventListener('DOMContentLoaded', function () {
 			checkAnswer();
 			numberQuestion++;
 			renderQuestions(numberQuestion);
-			console.log(finalAnswers);
+
+			firebase
+				.database()
+				.ref()
+				.child('contacts')
+				.push(finalAnswers);
 		};
 	};
 
